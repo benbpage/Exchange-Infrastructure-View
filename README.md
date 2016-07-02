@@ -3,7 +3,7 @@ Infraview v0.1
 
 Contact Paul Galjan on Twitter with questions: @PaulGaljan
 
-Allows you to quickly view the infrastructure requirements of a planned Exchange deployment using the Exchange Server Role Requirements Calculator available at: http://aka.ms/E2013Calc
+Allows you to quickly view the infrastructure requirements of a planned Exchange deployment using the Exchange Server Role Requirements Calculator available at: http://aka.ms/E2013Calc.  Accompanied by the Processor Query Tool available at: http://bit.ly/29dQDHN
 
 Tested with version 7.9 of the Calculator.
 
