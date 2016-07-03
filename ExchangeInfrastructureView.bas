@@ -1,7 +1,6 @@
-Attribute VB_Name = "Module2"
 Sub InfraView2()
 '
-' InfraView2 Macro v 0.1
+' InfraView2 Macro v 0.2
 ' Questions? Twitter @PaulGaljan
 
 '
@@ -46,8 +45,8 @@ Range("JBODEvaluation").Value = "No"
     Range("D6").FormulaR1C1 = "=RecRAMMBXSDC"
     Range("C7").FormulaR1C1 = "=(DBVolDiskSpaceReplicaSS+ResVolDiskSpaceNodeSS)/1024"
     Range("D7").FormulaR1C1 = "=(DBVolDiskSpaceReplicaSS+ResVolDiskSpaceNodeSS)/1024"
-    Range("C8").FormulaR1C1 = "=DBIOPSReplicaSS"
-    Range("D8").FormulaR1C1 = "=DBIOPSReplicaSS"
+    Range("C8").FormulaR1C1 = "=DBIOPSReplicaSS+TotLogVolSpace"
+    Range("D8").FormulaR1C1 = "=DBIOPSReplicaSS+TotLogVolSpace"
     Range("C9").FormulaR1C1 = "=TotNumDBCopiesServer"
     Range("D9").FormulaR1C1 = "=TotNumDBCopiesServer"
 'Extrapolations
@@ -435,5 +434,3 @@ Range("JBODEvaluation").Value = "No"
 Range("G1").FormulaR1C1 = "Questions?  Twitter: @PaulGaljan"
 Range("A1").Activate
 End Sub
-
-
