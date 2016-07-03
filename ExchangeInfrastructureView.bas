@@ -1,8 +1,7 @@
 Sub InfraView2()
 '
-' InfraView2 Macro v 0.2
+' InfraView2 Macro v 0.3
 ' Questions? Twitter @PaulGaljan
-
 '
 'Startup and Cleanup
 Application.ScreenUpdating = False
@@ -20,8 +19,8 @@ Range("JBODEvaluation").Value = "No"
     Sheets("Input").Select
     Sheets.Add.Name = "Infrastructure View"
     Columns("A:A").ColumnWidth = 3.14
-    Range("C1").FormulaR1C1 = "Site 1"
-    Range("D1").FormulaR1C1 = "Site 2"
+    Range("C1").FormulaR1C1 = "PDC"
+    Range("D1").FormulaR1C1 = "SDC"
     Range("B2").FormulaR1C1 = "# Copies"
     Range("B3").FormulaR1C1 = "DB Read %"
     Range("B4").FormulaR1C1 = "# Servers"
@@ -31,12 +30,12 @@ Range("JBODEvaluation").Value = "No"
     Range("B8").FormulaR1C1 = "DB IO"
     Range("B9").FormulaR1C1 = "BDM IO"
 'Calculations
-    Range("C2").FormulaR1C1 = "=(NumDBCopies+numLagDBCopies)-(calcNumLagCopyInSDCActual+numDBCopiesSDC)"
-    Range("D2").FormulaR1C1 = "=(calcNumLagCopyInSDCActual+numDBCopiesSDC)"
+    Range("C2").FormulaR1C1 = "=IF(SRModel=""Active/Passive"",(NumDBCopies+numLagDBCopies)-(calcNumLagCopyInSDCActual+numDBCopiesSDC),((NumDBCopies+numLagDBCopies)/2))"
+    Range("D2").FormulaR1C1 = "=IF(SRModel=""Active/Passive"",(calcNumLagCopyInSDCActual+numDBCopiesSDC),((NumDBCopies+numLagDBCopies)/2))"
     Range("C3").FormulaR1C1 = "=aggRWRatio"
     Range("D3").FormulaR1C1 = "=aggRWRatio"
-    Range("C4").FormulaR1C1 = "=NumDAGServersPDC*NumDAGsEnv"
-    Range("D4").FormulaR1C1 = "=NumDAGServersSDC*NumDAGsEnv"
+    Range("C4").FormulaR1C1 = "=IF(SRModel=""Active/Passive"",(NumDAGServersPDC*NumDAGsEnv),((NumDAGServersPDC+NumDAGServersSDC)*NumDAGsEnv/2))"
+    Range("D4").FormulaR1C1 = "=IF(SRModel=""Active/Passive"",(NumDAGServersSDC*NumDAGsEnv),(((NumDAGServersPDC+NumDAGServersSDC)*NumDAGsEnv)/2))"
     Range("D5").FormulaR1C1 = _
         "=IF(AND(ValidationCheck=FALSE,SiteResilienceEnabled=""Yes"",numMCyclesPerCoreSDC<>0),ROUNDUP(calcReqMBXCoresSDCServer+IF(calcMultiRoleEnabled=""Yes"",calcReqCASCoresSDCServer,0),0),""--"")"
     Range("C5").FormulaR1C1 = _
