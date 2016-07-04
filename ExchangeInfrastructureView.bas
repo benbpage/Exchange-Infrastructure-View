@@ -1,4 +1,4 @@
-Sub InfraView()
+Sub InfraView3()
 '
 ' InfraView Macro v 0.4
 ' Questions? Twitter @PaulGaljan
@@ -354,6 +354,96 @@ Range("JBODEvaluation").Value = "No"
     Range("C11:D11,C17:D17,C23:D23").NumberFormat = "# ""MB/s"""
     Columns("C:D").ColumnWidth = 10.71
     Range("A25").FormulaR1C1 = "Questions?  Twitter: @PaulGaljan"
+        Range("F13").Select
+    ActiveCell.FormulaR1C1 = "Sanity Check Data"
+    Range("F14").Select
+    ActiveCell.FormulaR1C1 = "Total Mailboxes"
+    Range("F15").Select
+    ActiveCell.FormulaR1C1 = "Avg Mailbox Size on Disk"
+    Range("F16").Select
+    ActiveCell.FormulaR1C1 = "Avg IO/Mbox"
+    Range("F17").Select
+    ActiveCell.FormulaR1C1 = "Mailboxes/Server"
+    Range("F18").Select
+    ActiveCell.FormulaR1C1 = "Mailboxes/DAG"
+    Range("F19").Select
+    ActiveCell.FormulaR1C1 = "Consider JBOD"
+    Range("F13:G13").Select
+    With Selection
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlBottom
+        .WrapText = False
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
+    Selection.Merge
+    Selection.Font.Bold = True
+    Range("F13:G19").Select
+    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+    With Selection.Borders(xlEdgeLeft)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeTop)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeBottom)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeRight)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    Selection.Borders(xlInsideVertical).LineStyle = xlNone
+    Selection.Borders(xlInsideHorizontal).LineStyle = xlNone
+    Range("F13:G13").Select
+    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+    With Selection.Borders(xlEdgeLeft)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeTop)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeBottom)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeRight)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    Selection.Borders(xlInsideVertical).LineStyle = xlNone
+    Selection.Borders(xlInsideHorizontal).LineStyle = xlNone
+    Columns("F:F").EntireColumn.AutoFit
+    Range("G15").NumberFormat = "#.0 ""GB"""
+    Range("G16:G17").NumberFormat = "0"
+    Range("G16").NumberFormat = "0.00"
     
 ' Finally Start with the formulas
     Range("E7").FormulaR1C1 = _
@@ -416,6 +506,15 @@ Range("JBODEvaluation").Value = "No"
     Range("D23").FormulaR1C1 = "=R[-11]C*R[-17]C"
     Range("C24").FormulaR1C1 = "=R[-13]C*R[-18]C"
     Range("D24").FormulaR1C1 = "=R[-13]C*R[-18]C"
+    Range("G14").FormulaR1C1 = "=TotalMBX"
+    Range("G15").FormulaR1C1 = "=(R[-10]C[-4]*1024)/R[-1]C"
+    Range("G16").FormulaR1C1 = "=RC[-4]/R[-2]C"
+    Range("G17").FormulaR1C1 = "=calcTotNumMBXPerSvr"
+    Range("G18").FormulaR1C1 = "=TotMBXPerDAG"
+    Range("G19").FormulaR1C1 = "=JBODEvaluation"
+    Range("H19").FormulaR1C1 = _
+        "=IF(JBODEvaluation=""Yes"",""<---Turn off JBOD Evaluation if deploying on SAN for more accurate size and IO estimation"","" "")"
+
     Range("A1").Select
 
 End Sub
