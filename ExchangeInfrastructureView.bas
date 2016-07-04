@@ -1,62 +1,50 @@
-Sub InfraView2()
+Sub InfraView()
 '
-' InfraView2 Macro v 0.3
+' InfraView Macro v 0.4
 ' Questions? Twitter @PaulGaljan
-'
-'Startup and Cleanup
+
 Application.ScreenUpdating = False
 On Error Resume Next
 Application.DisplayAlerts = False
 Sheets("Infrastructure View").Delete
 Application.DisplayAlerts = True
 On Error GoTo 0
-
-
-'Change JBODEvaluation to No
 Range("JBODEvaluation").Value = "No"
 
-'Add headings
+'
     Sheets("Input").Select
     Sheets.Add.Name = "Infrastructure View"
-    Columns("A:A").ColumnWidth = 3.14
+    
+    Range("B2").FormulaR1C1 = "# Copies"
     Range("C1").FormulaR1C1 = "PDC"
     Range("D1").FormulaR1C1 = "SDC"
-    Range("B2").FormulaR1C1 = "# Copies"
-    Range("B3").FormulaR1C1 = "DB Read %"
-    Range("B4").FormulaR1C1 = "# Servers"
-    Range("B5").FormulaR1C1 = "CPU Cores"
-    Range("B6").FormulaR1C1 = "RAM"
-    Range("B7").FormulaR1C1 = "Storage Capacity"
-    Range("B8").FormulaR1C1 = "DB IO"
-    Range("B9").FormulaR1C1 = "BDM IO"
-'Calculations
-    Range("C2").FormulaR1C1 = "=IF(SRModel=""Active/Passive"",(NumDBCopies+numLagDBCopies)-(calcNumLagCopyInSDCActual+numDBCopiesSDC),((NumDBCopies+numLagDBCopies)/2))"
-    Range("D2").FormulaR1C1 = "=IF(SRModel=""Active/Passive"",(calcNumLagCopyInSDCActual+numDBCopiesSDC),((NumDBCopies+numLagDBCopies)/2))"
-    Range("C3").FormulaR1C1 = "=aggRWRatio"
-    Range("D3").FormulaR1C1 = "=aggRWRatio"
-    Range("C4").FormulaR1C1 = "=IF(SRModel=""Active/Passive"",(NumDAGServersPDC*NumDAGsEnv),((NumDAGServersPDC+NumDAGServersSDC)*NumDAGsEnv/2))"
-    Range("D4").FormulaR1C1 = "=IF(SRModel=""Active/Passive"",(NumDAGServersSDC*NumDAGsEnv),(((NumDAGServersPDC+NumDAGServersSDC)*NumDAGsEnv)/2))"
-    Range("D5").FormulaR1C1 = _
-        "=IF(AND(ValidationCheck=FALSE,SiteResilienceEnabled=""Yes"",numMCyclesPerCoreSDC<>0),ROUNDUP(calcReqMBXCoresSDCServer+IF(calcMultiRoleEnabled=""Yes"",calcReqCASCoresSDCServer,0),0),""--"")"
-    Range("C5").FormulaR1C1 = _
-        "=IF(AND(ValidationCheck=FALSE,SiteResilienceEnabled=""Yes"",numMCyclesPerCorePDC<>0),ROUNDUP(calcReqMBXCoresPDCServer+IF(calcMultiRoleEnabled=""Yes"",calcReqCASCoresPDCServer,0),0),""--"")"
-    Range("C6").FormulaR1C1 = "=RecRAMMBXPDC"
-    Range("D6").FormulaR1C1 = "=RecRAMMBXSDC"
-    Range("C7").FormulaR1C1 = "=(DBVolDiskSpaceReplicaSS+ResVolDiskSpaceNodeSS)/1024"
-    Range("D7").FormulaR1C1 = "=(DBVolDiskSpaceReplicaSS+ResVolDiskSpaceNodeSS)/1024"
-    Range("C8").FormulaR1C1 = "=DBIOPSReplicaSS+TotLogVolSpace"
-    Range("D8").FormulaR1C1 = "=DBIOPSReplicaSS+TotLogVolSpace"
-    Range("C9").FormulaR1C1 = "=TotNumDBCopiesServer"
-    Range("D9").FormulaR1C1 = "=TotNumDBCopiesServer"
-'Extrapolations
-    Range("B5:B9").Select
-    Range("B9").Activate
-    Selection.Copy
-    Range("B10").Select
-    ActiveSheet.Paste
-    Range("B15").Select
-    ActiveSheet.Paste
-    Range("A5:A9").Select
+    Range("B3").FormulaR1C1 = "DB Read%"
+    Range("B4").FormulaR1C1 = "GCCores"
+    Range("B4").FormulaR1C1 = "GC Cores"
+    Range("B5").FormulaR1C1 = "Backup Capacity ("
+    Range("B5").FormulaR1C1 = "Backup Capacity (1 Copy)"
+    Range("B6").FormulaR1C1 = "# Servers"
+    Range("B7").FormulaR1C1 = "Cores"
+    Range("B8").FormulaR1C1 = "Ram"
+    Range("B9").FormulaR1C1 = "Capacity"
+    Range("B10").FormulaR1C1 = "DB IO"
+    Range("B11").FormulaR1C1 = "BDM IO"
+    Range("B12").FormulaR1C1 = "# Vols"
+    Range("B13").FormulaR1C1 = "Cores"
+    Range("B14").FormulaR1C1 = "Ram"
+    Range("B15").FormulaR1C1 = "Capacity"
+    Range("B16").FormulaR1C1 = "DB IO"
+    Range("B17").FormulaR1C1 = "BDM IO"
+    Range("B18").FormulaR1C1 = "# Vols"
+    Range("B19").FormulaR1C1 = "Cores (incl. GC)"
+    Range("B20").FormulaR1C1 = "Ram"
+    Range("B21").FormulaR1C1 = "Capacity"
+    Range("B22").FormulaR1C1 = "DB IO"
+    Range("B23").FormulaR1C1 = "BDM IO"
+    Range("B24").FormulaR1C1 = "# Vols"
+ '   Range("C7").Select
+    Columns("B:B").EntireColumn.AutoFit
+    Range("A7:A12").Select
     Application.CutCopyMode = False
     With Selection
         .HorizontalAlignment = xlCenter
@@ -70,24 +58,8 @@ Range("JBODEvaluation").Value = "No"
         .MergeCells = False
     End With
     Selection.Merge
-
-'Apply initial formatting
     ActiveCell.FormulaR1C1 = "Server"
-    Range("A10:A14").Select
-    With Selection
-        .HorizontalAlignment = xlCenter
-        .VerticalAlignment = xlBottom
-        .WrapText = False
-        .Orientation = 0
-        .AddIndent = False
-        .IndentLevel = 0
-        .ShrinkToFit = False
-        .ReadingOrder = xlContext
-        .MergeCells = False
-    End With
-    Selection.Merge
-    ActiveCell.FormulaR1C1 = "Copy"
-    Range("A15:A19").Select
+    Range("A13:A18").Select
     With Selection
         .HorizontalAlignment = xlCenter
         .VerticalAlignment = xlBottom
@@ -101,7 +73,23 @@ Range("JBODEvaluation").Value = "No"
     End With
     Selection.Merge
     ActiveCell.FormulaR1C1 = "Site"
-    Range("A5:A19").Select
+    Range("A19:A24").Select
+    With Selection
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlBottom
+        .WrapText = False
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
+    Selection.Merge
+    ActiveCell.FormulaR1C1 = "Site"
+    Range("A13:A18").Select
+    ActiveCell.FormulaR1C1 = "Copy"
+    Range("A7:A24").Select
     With Selection
         .HorizontalAlignment = xlCenter
         .VerticalAlignment = xlBottom
@@ -122,151 +110,8 @@ Range("JBODEvaluation").Value = "No"
         .ShrinkToFit = False
         .ReadingOrder = xlContext
     End With
+    Columns("A:A").EntireColumn.AutoFit
     Selection.Font.Bold = True
-    Columns("B:B").ColumnWidth = 15.14
-    Range("A5:D9").Select
-    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
-    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
-    With Selection.Borders(xlEdgeLeft)
-        .LineStyle = xlContinuous
-        .ColorIndex = 0
-        .TintAndShade = 0
-        .Weight = xlThin
-    End With
-    With Selection.Borders(xlEdgeTop)
-        .LineStyle = xlContinuous
-        .ColorIndex = 0
-        .TintAndShade = 0
-        .Weight = xlThin
-    End With
-    With Selection.Borders(xlEdgeBottom)
-        .LineStyle = xlContinuous
-        .ColorIndex = 0
-        .TintAndShade = 0
-        .Weight = xlThin
-    End With
-    With Selection.Borders(xlEdgeRight)
-        .LineStyle = xlContinuous
-        .ColorIndex = 0
-        .TintAndShade = 0
-        .Weight = xlThin
-    End With
-    Selection.Borders(xlInsideVertical).LineStyle = xlNone
-    Selection.Borders(xlInsideHorizontal).LineStyle = xlNone
-    Range("A10:D14").Select
-    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
-    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
-    With Selection.Borders(xlEdgeLeft)
-        .LineStyle = xlContinuous
-        .ColorIndex = 0
-        .TintAndShade = 0
-        .Weight = xlThin
-    End With
-    With Selection.Borders(xlEdgeTop)
-        .LineStyle = xlContinuous
-        .ColorIndex = 0
-        .TintAndShade = 0
-        .Weight = xlThin
-    End With
-    With Selection.Borders(xlEdgeBottom)
-        .LineStyle = xlContinuous
-        .ColorIndex = 0
-        .TintAndShade = 0
-        .Weight = xlThin
-    End With
-    With Selection.Borders(xlEdgeRight)
-        .LineStyle = xlContinuous
-        .ColorIndex = 0
-        .TintAndShade = 0
-        .Weight = xlThin
-    End With
-    Selection.Borders(xlInsideVertical).LineStyle = xlNone
-    Selection.Borders(xlInsideHorizontal).LineStyle = xlNone
-    Range("A15:D19").Select
-    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
-    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
-    With Selection.Borders(xlEdgeLeft)
-        .LineStyle = xlContinuous
-        .ColorIndex = 0
-        .TintAndShade = 0
-        .Weight = xlThin
-    End With
-    With Selection.Borders(xlEdgeTop)
-        .LineStyle = xlContinuous
-        .ColorIndex = 0
-        .TintAndShade = 0
-        .Weight = xlThin
-    End With
-    With Selection.Borders(xlEdgeBottom)
-        .LineStyle = xlContinuous
-        .ColorIndex = 0
-        .TintAndShade = 0
-        .Weight = xlThin
-    End With
-    With Selection.Borders(xlEdgeRight)
-        .LineStyle = xlContinuous
-        .ColorIndex = 0
-        .TintAndShade = 0
-        .Weight = xlThin
-    End With
-    Selection.Borders(xlInsideVertical).LineStyle = xlNone
-    Selection.Borders(xlInsideHorizontal).LineStyle = xlNone
-    Range("C1:D19").Select
-    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
-    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
-    With Selection.Borders(xlEdgeLeft)
-        .LineStyle = xlContinuous
-        .ColorIndex = 0
-        .TintAndShade = 0
-        .Weight = xlThin
-    End With
-    With Selection.Borders(xlEdgeTop)
-        .LineStyle = xlContinuous
-        .ColorIndex = 0
-        .TintAndShade = 0
-        .Weight = xlThin
-    End With
-    With Selection.Borders(xlEdgeBottom)
-        .LineStyle = xlContinuous
-        .ColorIndex = 0
-        .TintAndShade = 0
-        .Weight = xlThin
-    End With
-    With Selection.Borders(xlEdgeRight)
-        .LineStyle = xlContinuous
-        .ColorIndex = 0
-        .TintAndShade = 0
-        .Weight = xlThin
-    End With
-    Selection.Borders(xlInsideVertical).LineStyle = xlNone
-    Range("B2:D4").Select
-    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
-    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
-    With Selection.Borders(xlEdgeLeft)
-        .LineStyle = xlContinuous
-        .ColorIndex = 0
-        .TintAndShade = 0
-        .Weight = xlThin
-    End With
-    With Selection.Borders(xlEdgeTop)
-        .LineStyle = xlContinuous
-        .ColorIndex = 0
-        .TintAndShade = 0
-        .Weight = xlThin
-    End With
-    With Selection.Borders(xlEdgeBottom)
-        .LineStyle = xlContinuous
-        .ColorIndex = 0
-        .TintAndShade = 0
-        .Weight = xlThin
-    End With
-    With Selection.Borders(xlEdgeRight)
-        .LineStyle = xlContinuous
-        .ColorIndex = 0
-        .TintAndShade = 0
-        .Weight = xlThin
-    End With
-    Selection.Borders(xlInsideHorizontal).LineStyle = xlNone
     Range("C1:D1").Select
     With Selection
         .HorizontalAlignment = xlCenter
@@ -280,7 +125,7 @@ Range("JBODEvaluation").Value = "No"
         .MergeCells = False
     End With
     Selection.Font.Bold = True
-    Range("A5:A19").Select
+    Range("B2:D6").Select
     Selection.Borders(xlDiagonalDown).LineStyle = xlNone
     Selection.Borders(xlDiagonalUp).LineStyle = xlNone
     With Selection.Borders(xlEdgeLeft)
@@ -308,128 +153,269 @@ Range("JBODEvaluation").Value = "No"
         .Weight = xlThin
     End With
     Selection.Borders(xlInsideVertical).LineStyle = xlNone
-    Range("C10").Select
-    ActiveCell.FormulaR1C1 = "=(R[-5]C*R[-6]C)/R[-8]C"
-    Range("C11").Select
-    ActiveCell.FormulaR1C1 = "=R[-5]C*R[-7]C/R[-9]C"
-    Range("C12").Select
-    ActiveCell.FormulaR1C1 = "=R[5]C/R[-10]C"
+    Selection.Borders(xlInsideHorizontal).LineStyle = xlNone
+    Range("A7:D12").Select
+    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+    With Selection.Borders(xlEdgeLeft)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeTop)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeBottom)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeRight)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    Selection.Borders(xlInsideVertical).LineStyle = xlNone
+    Selection.Borders(xlInsideHorizontal).LineStyle = xlNone
+    Range("A13:D18").Select
+    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+    With Selection.Borders(xlEdgeLeft)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeTop)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeBottom)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeRight)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    Selection.Borders(xlInsideVertical).LineStyle = xlNone
+    Selection.Borders(xlInsideHorizontal).LineStyle = xlNone
+    Range("A19:D24").Select
+    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+    With Selection.Borders(xlEdgeLeft)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeTop)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeBottom)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeRight)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    Selection.Borders(xlInsideVertical).LineStyle = xlNone
+    Selection.Borders(xlInsideHorizontal).LineStyle = xlNone
+    Range("B2:D24").Select
+    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+    With Selection.Borders(xlEdgeLeft)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeTop)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeBottom)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeRight)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    Selection.Borders(xlInsideVertical).LineStyle = xlNone
+    Range("C1:D24").Select
+    Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+    Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+    With Selection.Borders(xlEdgeLeft)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeTop)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeBottom)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    With Selection.Borders(xlEdgeRight)
+        .LineStyle = xlContinuous
+        .ColorIndex = 0
+        .TintAndShade = 0
+        .Weight = xlThin
+    End With
+    Selection.Borders(xlInsideVertical).LineStyle = xlNone
     Range("C13").Select
-    ActiveCell.FormulaR1C1 = "=R[5]C/R[-11]C"
-    Range("C14").Select
-    ActiveCell.FormulaR1C1 = "=R[5]C/R[-12]C"
-    Range("C15").Select
-    ActiveCell.FormulaR1C1 = "=R[-10]C*R[-11]C"
-    Range("C16").Select
-    ActiveCell.FormulaR1C1 = "=R[-10]C*R[-12]C"
-    Range("C17").Select
-    ActiveCell.FormulaR1C1 = "=R[-10]C*R[-13]C"
-    Range("C18").Select
-    ActiveCell.FormulaR1C1 = "=R[-10]C*R[-14]C"
+    Selection.FormatConditions.Add Type:=xlExpression, Formula1:= _
+        "=ISERROR(C13)"
+    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+    With Selection.FormatConditions(1).Font
+        .ThemeColor = xlThemeColorDark1
+        .TintAndShade = 0
+    End With
+    Selection.FormatConditions(1).StopIfTrue = False
+    Range("D13").Select
+    Selection.FormatConditions.Add Type:=xlExpression, Formula1:= _
+        "=ISERROR(D13)"
+    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
+    With Selection.FormatConditions(1).Font
+        .ThemeColor = xlThemeColorDark1
+        .TintAndShade = 0
+    End With
+    Selection.FormatConditions(1).StopIfTrue = False
     Range("C19").Select
-    ActiveCell.FormulaR1C1 = "=R[-10]C*R[-15]C"
-    Range("C10:C19").Select
-    Selection.Copy
-    Range("D10").Select
-    Selection.PasteSpecial Paste:=xlPasteFormulas, Operation:=xlNone, _
-        SkipBlanks:=False, Transpose:=False
-    Range("C3:D3").Style = "Percent"
-
-' Conditional Formatting to handle lack of proc information
     Selection.FormatConditions.Add Type:=xlExpression, Formula1:= _
-        "=ISERROR(C10)"
+        "=ISERROR(C19)"
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Font
-        .ThemeColor = xlThemeColorLight2
-        .TintAndShade = 0
-    End With
-    With Selection.FormatConditions(1).Interior
-        .PatternColorIndex = xlAutomatic
-        .ThemeColor = xlThemeColorLight2
+        .ThemeColor = xlThemeColorDark1
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
-    Range("D10").Select
+    Range("D19").Select
     Selection.FormatConditions.Add Type:=xlExpression, Formula1:= _
-        "=ISERROR(D10)"
+        "=ISERROR(D19)"
     Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
     With Selection.FormatConditions(1).Font
-        .ThemeColor = xlThemeColorLight2
-        .TintAndShade = 0
-    End With
-    With Selection.FormatConditions(1).Interior
-        .PatternColorIndex = xlAutomatic
-        .ThemeColor = xlThemeColorLight2
+        .ThemeColor = xlThemeColorDark1
         .TintAndShade = 0
     End With
     Selection.FormatConditions(1).StopIfTrue = False
-    Range("D15").Select
-    Selection.FormatConditions.Add Type:=xlExpression, Formula1:= _
-        "=ISERROR(D15)"
-    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
-    With Selection.FormatConditions(1).Font
-        .ThemeColor = xlThemeColorLight2
-        .TintAndShade = 0
+    Range("C5:D5").Select
+    With Selection
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlBottom
+        .WrapText = False
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
     End With
-    With Selection.FormatConditions(1).Interior
-        .PatternColorIndex = xlAutomatic
-        .ThemeColor = xlThemeColorLight2
-        .TintAndShade = 0
-    End With
-    Selection.FormatConditions(1).StopIfTrue = False
-    Range("C15").Select
-    Selection.FormatConditions.Add Type:=xlExpression, Formula1:= _
-        "=ISERROR(C15)"
-    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
-    With Selection.FormatConditions(1).Font
-        .ThemeColor = xlThemeColorLight2
-        .TintAndShade = 0
-    End With
-    With Selection.FormatConditions(1).Interior
-        .PatternColorIndex = xlAutomatic
-        .ThemeColor = xlThemeColorLight2
-        .TintAndShade = 0
-    End With
-    Selection.FormatConditions(1).StopIfTrue = False
+    Selection.Merge
+    Selection.NumberFormat = "# ""TB"""
+    Range("C9:D9,C15:D15,C21:D21").NumberFormat = "# ""TB"""
+    Range("C8:D8,C14:D14,C20:D20").NumberFormat = "# ""GB"""
+    Range("C2:D2,C4:D4,C6:D7,C10:D13,C16:D18,C19:D19,C22:D24").NumberFormat = "0"
+    Range("C3:D3").NumberFormat = "0%"
+    Range("C11:D11,C17:D17,C23:D23").NumberFormat = "# ""MB/s"""
+    Columns("C:D").ColumnWidth = 10.71
+    Range("A25").FormulaR1C1 = "Questions?  Twitter: @PaulGaljan"
     
-    Range("C10").Select
-    Selection.FormatConditions.Add Type:=xlExpression, Formula1:= _
-        "=ISERROR(C10)"
-    Selection.FormatConditions(Selection.FormatConditions.Count).SetFirstPriority
-    With Selection.FormatConditions(1).Font
-        .ThemeColor = xlThemeColorLight2
-        .TintAndShade = 0
-    End With
-    With Selection.FormatConditions(1).Interior
-        .PatternColorIndex = xlAutomatic
-        .ThemeColor = xlThemeColorLight2
-        .TintAndShade = 0
-    End With
-    Selection.FormatConditions(1).StopIfTrue = False
+' Finally Start with the formulas
+    Range("E7").FormulaR1C1 = _
+     "=IF(R[0]C[-2]=""--"",""<---Populate the SpecInt2006 Rate on the Input tab"","" "")"
+    Range("C2").FormulaR1C1 = _
+        "=IF(SRModel=""Active/Passive"",(NumDBCopies+numLagDBCopies)-(calcNumLagCopyInSDCActual+numDBCopiesSDC),((NumDBCopies+numLagDBCopies)/2))"
+    Range("D2").FormulaR1C1 = _
+        "=IF(SRModel=""Active/Passive"",(calcNumLagCopyInSDCActual+numDBCopiesSDC),((NumDBCopies+numLagDBCopies)/2))"
+    Range("C3").FormulaR1C1 = "=aggRWRatio"
+    Range("D3").Select
+    ActiveCell.FormulaR1C1 = "=aggRWRatio"
+    Range("C4").Select
+    ActiveCell.FormulaR1C1 = "=IF(ValidationCheck=FALSE,calcRecGCCoresPDC,""--"")"
+    Range("D4").FormulaR1C1 = "=IF(ValidationCheck=FALSE,calcRecGCCoresSDC,""--"")"
+    Range("C5:D5").FormulaR1C1 = _
+        "=((('Volume Requirements'!R[110]C[2]*'Role Requirements'!R[270]C)+('Role Requirements'!R[271]C*'Volume Requirements'!R[110]C[2]))/1024)*(R[1]C/R[-3]C)"
+    Range("C6").Select
+    ActiveCell.FormulaR1C1 = _
+        "=IF(SRModel=""Active/Passive"",(NumDAGServersPDC*NumDAGsEnv),((NumDAGServersPDC+NumDAGServersSDC)*NumDAGsEnv/2))"
+    Range("D6").FormulaR1C1 = _
+        "=IF(SRModel=""Active/Passive"",(NumDAGServersSDC*NumDAGsEnv),(((NumDAGServersPDC+NumDAGServersSDC)*NumDAGsEnv)/2))"
+    Range("C7").FormulaR1C1 = _
+        "=IF(AND(ValidationCheck=FALSE,SiteResilienceEnabled=""Yes"",numMCyclesPerCorePDC<>0),ROUNDUP(calcReqMBXCoresPDCServer+IF(calcMultiRoleEnabled=""Yes"",calcReqCASCoresPDCServer,0),0),""--"")"
+    Range("D7").Select
+    ActiveCell.FormulaR1C1 = _
+        "=IF(AND(ValidationCheck=FALSE,SiteResilienceEnabled=""Yes"",numMCyclesPerCoreSDC<>0),ROUNDUP(calcReqMBXCoresSDCServer+IF(calcMultiRoleEnabled=""Yes"",calcReqCASCoresSDCServer,0),0),""--"")"
+    Range("C8").FormulaR1C1 = "=RecRAMMBXPDC"
+    Range("D8").FormulaR1C1 = "=RecRAMMBXSDC"
+    Range("C9").FormulaR1C1 = _
+        "=(DBVolDiskSpaceReplicaSS+ResVolDiskSpaceNodeSS+TotLogVolSpace)/1024"
+    Range("D9").FormulaR1C1 = _
+        "=(DBVolDiskSpaceReplicaSS+ResVolDiskSpaceNodeSS+TotLogVolSpace)/1024"
+    Range("C10").FormulaR1C1 = "=DBIOPSReplicaSS"
+    Range("D10").FormulaR1C1 = "=DBIOPSReplicaSS"
+    Range("C11").FormulaR1C1 = "=TotNumDBCopiesServer"
+    Range("D11").FormulaR1C1 = "=TotNumDBCopiesServer"
+    Range("C12").FormulaR1C1 = "=TotExchVolumes"
+    Range("D12").FormulaR1C1 = "=TotExchVolumes"
+    Range("C13").FormulaR1C1 = "=(R[-6]C*R[-7]C)/R[-11]C"
+    Range("D13").FormulaR1C1 = "=(R[-6]C*R[-7]C)/R[-11]C"
+    Range("C14").FormulaR1C1 = "=R[-6]C*R[-8]C/R[-12]C"
+    Range("D14").FormulaR1C1 = "=R[-6]C*R[-8]C/R[-12]C"
+    Range("C15").FormulaR1C1 = "=R[6]C/R[-13]C"
+    Range("D15").FormulaR1C1 = "=R[6]C/R[-13]C"
+    Range("C16").FormulaR1C1 = "=R[6]C/R[-14]C"
+    Range("D16").FormulaR1C1 = "=R[6]C/R[-14]C"
+    Range("C17").FormulaR1C1 = "=R[7]C/R[-15]C"
+    Range("D17").FormulaR1C1 = "=R[7]C/R[-15]C"
+    Range("C18").FormulaR1C1 = "=R[5]C/R[-16]C"
+    Range("D18").FormulaR1C1 = "=R[5]C/R[-16]C"
+    Range("C19").FormulaR1C1 = "=(R[-12]C*R[-13]C)+R[-15]C"
+    Range("D19").FormulaR1C1 = "=(R[-12]C*R[-13]C)+R[-15]C"
+    Range("C20").FormulaR1C1 = "=R[-12]C*R[-14]C"
+    Range("D20").FormulaR1C1 = "=R[-12]C*R[-14]C"
+    Range("C21").FormulaR1C1 = "=R[-12]C*R[-15]C"
+    Range("D21").FormulaR1C1 = "=R[-12]C*R[-15]C"
+    Range("C22").FormulaR1C1 = "=R[-12]C*R[-16]C"
+    Range("D22").FormulaR1C1 = "=R[-12]C*R[-16]C"
+    Range("C23").FormulaR1C1 = "=R[-11]C*R[-17]C"
+    Range("D23").FormulaR1C1 = "=R[-11]C*R[-17]C"
+    Range("C24").FormulaR1C1 = "=R[-13]C*R[-18]C"
+    Range("D24").FormulaR1C1 = "=R[-13]C*R[-18]C"
+    Range("A1").Select
 
-'Comment for specint rates
-    Range("C5").AddComment
-    Range("C5").comment.Visible = False
-    Range("C5").comment.Text Text:= _
-        "pgaljan:" & Chr(10) & "Enter SpecInt2006 Rate values on the Input tab to calculate cores."
-    Range("C2").Select
-
-' Format with units
-    Range("C7:D7,C12:D12,C17:D17").Select
-    Range("C17").Activate
-    Selection.NumberFormat = "#.0 ""TB"""
-    Range("C9:D9,C14:D14,C19:D19").Select
-    Range("C19").Activate
-    Selection.ClearComments
-    Selection.NumberFormat = "# ""MB/s"""
-'Make it pretty
-    Columns("A:A").Select
-    Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
-    Selection.ColumnWidth = 1.71
-    Rows("1:1").Select
-    Selection.Insert Shift:=xlDown, CopyOrigin:=xlFormatFromLeftOrAbove
-    Range("D9:E9").Select
-    Selection.NumberFormat = "0"
-Range("G1").FormulaR1C1 = "Questions?  Twitter: @PaulGaljan"
-Range("A1").Activate
 End Sub
